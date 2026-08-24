@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: platform-demo
+type: Opaque
+stringData:
+  POSTGRES_USER: platform
+  POSTGRES_PASSWORD: platform
+  POSTGRES_DB: platform
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: platform-demo
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: platform-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "platform", "-d", "platform"]
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
