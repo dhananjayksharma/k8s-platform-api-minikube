@@ -384,15 +384,15 @@ Exit:
 # Scale the API
 
 ```bash
-kubectl scale deployment/platform-api \
+kubectl scale deployment/k8s-platform-api-minikube \
   -n platform-demo \
-  --replicas=5
+  --replicas=6
 ```
 
 Verify:
 
 ```bash
-kubectl get pods -n platform-demo -l app=platform-api
+kubectl get pods -n platform-demo -l app=k8s-platform-api-minikube
 ```
 
 ## Important distributed-systems observation
@@ -597,3 +597,14 @@ Delete the cluster if no longer needed:
 ```bash
 minikube delete
 ```
+==== manually start on local =====
+make deps
+make test
+make image
+make list
+make deploy
+make status
+make port-forward
+
+kubectl get endpointslice -n platform-demo \
+  -l kubernetes.io/service-name=k8s-platform-api-minikube

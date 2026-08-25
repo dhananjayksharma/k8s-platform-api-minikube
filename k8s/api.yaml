@@ -9,21 +9,21 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: platform-api
+  name: k8s-platform-api-minikube
   namespace: platform-demo
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: platform-api
+      app: k8s-platform-api-minikube
   template:
     metadata:
       labels:
-        app: platform-api
+        app: k8s-platform-api-minikube
     spec:
       containers:
-        - name: platform-api
-          image: platform-api:local
+        - name: k8s-platform-api-minikube
+          image: k8s-platform-api-minikube:local
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -56,11 +56,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: platform-api
+  name: k8s-platform-svc-minikube
   namespace: platform-demo
 spec:
   selector:
-    app: platform-api
+    app: k8s-platform-api-minikube
   ports:
     - port: 80
       targetPort: 8080
