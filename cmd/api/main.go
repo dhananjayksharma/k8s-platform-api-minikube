@@ -47,7 +47,7 @@ func main() {
 	app := &App{
 		cache:   cache.NewLRU(100),
 		meta:    metadata.NewStore(),
-		limiter: ratelimit.NewManager(10, 5), // capacity=10, refill=5/sec/client
+		limiter: ratelimit.NewManager(20, 15), // capacity=20, refill=15/sec/client
 		db:      db,
 	}
 	app.queue = queue.NewWorkQueue(100, 3, app.processJob)
