@@ -3,11 +3,11 @@ module k8s-platform-api-minikube
 go 1.25
 
 require (
-	github.com/Masterminds/semver/v3 v3.3.1
-	github.com/cenkalti/backoff/v5 v5.0.3
-	github.com/google/uuid v1.6.0
+	github.com/Masterminds/semver/v3 v3.2.1
+	github.com/cenkalti/backoff/v4 v4.3.0
+	github.com/google/uuid v1.3.1
 	github.com/jackc/pgx/v5 v5.7.2
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.8.4
 )
 
 require (

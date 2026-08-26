@@ -1,14 +1,15 @@
 package dependencylab
 
 import (
+	"context"
 	"errors"
 	"time"
 
-	backoff "github.com/cenkalti/backoff/v4"
+	backoff "github.com/cenkalti/backoff/v5"
 )
 
-// Retry runs op at most attempts times using backoff/v4.
-// This file is the baseline for the deliberate v4 -> v5 breaking-upgrade lab.
+// Retry is the remediated implementation for backoff/v5. v5 changed Retry to
+// accept context, a generic operation, and functional retry options.
 func Retry(attempts uint64, op func() error) error {
 	if attempts == 0 {
 		return errors.New("attempts must be greater than zero")
@@ -17,9 +18,16 @@ func Retry(attempts uint64, op func() error) error {
 		return errors.New("operation must not be nil")
 	}
 
-	policy := backoff.WithMaxRetries(
-		backoff.NewConstantBackOff(time.Millisecond),
-		attempts-1,
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := backoff.Retry(
+		ctx,
+		func() (struct{}, error) {
+			return struct{}{}, op()
+		},
+		backoff.WithBackOff(backoff.NewConstantBackOff(time.Millisecond)),
+		backoff.WithMaxTries(uint(attempts)),
 	)
-	return backoff.Retry(op, policy)
+	return err
 }

@@ -1,0 +1,5 @@
+linux
+amd64
+/home/rootdkgo/go
+https://proxy.golang.org,direct
+/mnt/c/Users/DKGOSQLDT/gpu-enabled-minikube/dev-local/k8s-projects/k8s-platform-api-minikube/go.mod
