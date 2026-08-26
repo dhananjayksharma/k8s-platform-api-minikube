@@ -1,0 +1,33 @@
+.PHONY: deps-bootstrap deps-test deps-snapshot deps-validate deps-upgrade-safe deps-break-v5 deps-fix-v5 deps-restore-v4 deps-status
+
+deps-bootstrap:
+	./scripts/deps/bootstrap.sh
+
+deps-test:
+	go test -v -count=1 ./internal/dependencylab/...
+
+deps-snapshot:
+	./scripts/deps/snapshot.sh baseline
+
+deps-validate:
+	./scripts/deps/validate.sh
+
+deps-upgrade-safe:
+	./scripts/deps/upgrade-safe.sh
+
+deps-break-v5:
+	./scripts/deps/break-backoff-v5.sh
+
+deps-fix-v5:
+	./scripts/deps/fix-backoff-v5.sh
+
+deps-restore-v4:
+	./scripts/deps/restore-v4.sh
+
+deps-status:
+	go list -m all
+	@echo
+	go mod why -m github.com/google/uuid
+	@echo
+	go mod why -m github.com/cenkalti/backoff/v4 || true
+	go mod why -m github.com/cenkalti/backoff/v5 || true

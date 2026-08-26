@@ -1,0 +1,25 @@
+package dependencylab
+
+import (
+	"errors"
+	"time"
+
+	backoff "github.com/cenkalti/backoff/v5"
+)
+
+// INTENTIONALLY BROKEN: import moved from /v4 to /v5, but the old v4 API was
+// kept. Running go test should produce compiler errors. This is the interview lab.
+func Retry(attempts uint64, op func() error) error {
+	if attempts == 0 {
+		return errors.New("attempts must be greater than zero")
+	}
+	if op == nil {
+		return errors.New("operation must not be nil")
+	}
+
+	policy := backoff.WithMaxRetries(
+		backoff.NewConstantBackOff(time.Millisecond),
+		attempts-1,
+	)
+	return backoff.Retry(op, policy)
+}
